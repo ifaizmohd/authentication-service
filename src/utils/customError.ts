@@ -1,4 +1,6 @@
-export class CustomError extends Error {
+import { ICustomError } from "../interfaces/utils/customError";
+
+export class CustomError extends Error implements ICustomError {
   statusCode: number;
   fileName: string;
   methodName: string;

@@ -7,7 +7,7 @@ export class DB {
     host: process.env.PGHOST,
     database: process.env.PGDATABASE,
     password: process.env.PGPASSWORD,
-    port: 5432,
+    port: parseInt(<string>process.env.PGPORT),
   });
 
   public static async connectToDbClient(): Promise<void> {
@@ -29,7 +29,7 @@ export class DB {
 
 export async function setupDb(): Promise<void> {
   try {
-    const dropUsersTable = `DROP TABLE IF EXISTS users;`;
+    // const dropUsersTable = `DROP TABLE IF EXISTS users;`;
     const query = `CREATE TABLE users (
             id SERIAL PRIMARY KEY,
             name VARCHAR(50) NOT NULL,
