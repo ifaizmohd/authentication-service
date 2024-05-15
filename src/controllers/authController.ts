@@ -20,22 +20,30 @@ export class AuthController implements AuthenticationController {
     this.router.post("/register", this.registerUser);
     this.router.get("/verify/:token", this.verifyEmail);
     this.router.post("/login", this.loginUser);
+    this.router.get("/ping", (req: Request, res: Response) => {
+      res.send("Hi from Auth Service!");
+    });
   }
 
   public registerUser = async (req: Request, res: Response) => {
     try {
-      const { email, password } = req.body;
+      const { name, email, password } = req.body;
+      console.log({ email, password, body: req?.body });
 
       // Hash the password
       const hashedPassword = await bcrypt.hash(password, 10);
 
       // Save user to database
-      const user = await this.userService.createUser(email, hashedPassword);
+      const user = await this.userService.createUser(
+        name,
+        email,
+        hashedPassword
+      );
 
-      // Send verification email
-      const verificationToken =
-        await this.userService.generateVerificationToken(user.id);
-      await this.emailService.sendVerificationEmail(email, verificationToken);
+      // Send verification email, currently send email service is not implemented.
+      //   const verificationToken =
+      //     await this.userService.generateVerificationToken(user.id);
+      //   await this.emailService.sendVerificationEmail(email, verificationToken);
 
       res.status(201).json({
         message:

@@ -1,32 +1,38 @@
 import bcrypt from "bcryptjs";
 import { Pool } from "pg";
-import createPool from "../db";
+import { DB } from "../db";
 import { UserAuthentication } from "../interfaces/services/userService";
 
 export class UserService implements UserAuthentication {
   private pool: Pool;
 
   constructor() {
-    this.pool = createPool();
+    this.pool = DB.getPool();
   }
 
-  public async createUser(email: string, password: string): Promise<any> {
+  public async createUser(
+    name: string,
+    email: string,
+    password: string
+  ): Promise<any> {
     const client = await this.pool.connect();
     try {
       const queryText =
-        "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id";
-      const result = await client.query(queryText, [email, password]);
+        "INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id";
+      const result = await client.query(queryText, [name, email, password]);
       return result.rows[0];
     } finally {
       client.release();
     }
   }
 
+  // TODO:
   public async generateVerificationToken(userId: number): Promise<string> {
     // Implement token generation logic here
     return "dummy_verification_token";
   }
 
+  // TODO:
   public async verifyEmail(token: string): Promise<void> {
     // Implement email verification logic here
     // You may need to decode the token and update the user's verification status in the database
